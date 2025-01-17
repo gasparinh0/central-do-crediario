@@ -11,7 +11,7 @@ export default function Register({ title, subtitle, buttonText }) {
                 <TextField id="standard-basic" label="Digite sua senha" variant="standard" />
             </div>
 
-            <button className='bg-[#3b82f6] text-white p-1 w-32 mt-5 rounded-xl transition-all duration-200 hover:bg-[#5a92ec] hover:scale-105'>{buttonText}</button>
+            <button className='bg-[#3b82f6] text-white p-1 w-52 mt-5 rounded-xl transition-all duration-200 hover:bg-[#5a92ec] hover:scale-105'>{buttonText}</button>
 
         </div>
     )
