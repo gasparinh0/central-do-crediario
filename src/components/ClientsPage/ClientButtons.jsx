@@ -16,8 +16,8 @@ export default function ClientButtons() {
                     <TextField id="input-with-sx" label="Pesquisar" variant="standard" />
                 </Box>
 
-                <Button variant="contained" className="w-28">
-                    Cadastrar
+                <Button variant="contained" className="w-48">
+                    Cadastrar cliente
                 </Button>
             </div>
 
