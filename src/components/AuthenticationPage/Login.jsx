@@ -1,6 +1,8 @@
 import TextField from '@mui/material/TextField';
 import logo from '../../assets/logo.png'
 
+import { NavLink } from "react-router";
+
 export default function Login({ onForgetPassword, onRegister, title, subtitle, forgetPassword, buttonText }) {
 
     return (
@@ -27,7 +29,9 @@ export default function Login({ onForgetPassword, onRegister, title, subtitle, f
             </div>
             <p className='text-xs mt-2 font-semibold'>{' '}<span className='font-semibold text-blue-500 cursor-pointer' onClick={onForgetPassword} >{forgetPassword}</span></p>
 
-            <button className='bg-[#3b82f6] text-white p-1 min-w-screen mt-5 rounded-xl transition-all duration-200 hover:bg-[#5a92ec] hover:scale-105'>{buttonText}</button>
+            <NavLink to="/dashboard">
+                <button className='bg-[#3b82f6] text-white p-1 w-52 mt-5 rounded-xl transition-all duration-200 hover:bg-[#5a92ec] hover:scale-105'>{buttonText}</button>
+            </NavLink>
         </div>
     )
 }
