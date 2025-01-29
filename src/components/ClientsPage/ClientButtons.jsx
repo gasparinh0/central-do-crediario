@@ -1,12 +1,20 @@
+import { useState } from 'react';
+
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 
+import ClientRegisterModal from './ClientRegisterModal'
+
 import SearchIcon from '@mui/icons-material/Search';
 
 
 export default function ClientButtons() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const openModal = () => setIsModalOpen(true);
+    const closeModal = () => setIsModalOpen(false);
 
     return (
         <section>
@@ -16,7 +24,7 @@ export default function ClientButtons() {
                     <TextField id="input-with-sx" label="Pesquisar" variant="standard" />
                 </Box>
 
-                <Button variant="contained" className="w-48">
+                <Button onClick={openModal} variant="contained" className="w-48">
                     Cadastrar cliente
                 </Button>
             </div>
@@ -24,6 +32,8 @@ export default function ClientButtons() {
             <div className='mb-3'>
                 <Divider />
             </div>
+
+            <ClientRegisterModal isOpen={isModalOpen} onClose={closeModal} />
         </section>
     )
 }
