@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
@@ -5,8 +6,14 @@ import Box from '@mui/material/Box';
 
 import SearchIcon from '@mui/icons-material/Search';
 
+import OrdersRegisterModal from './OrdersRegisterModal'
+
 
 export default function OrdersButtons() {
+        const [isModalOpen, setIsModalOpen] = useState(false);
+    
+        const openModal = () => setIsModalOpen(true);
+        const closeModal = () => setIsModalOpen(false);
 
     return (
         <section>
@@ -16,7 +23,7 @@ export default function OrdersButtons() {
                     <TextField id="input-with-sx" label="Pesquisar" variant="standard" />
                 </Box>
 
-                <Button variant="contained" className="w-36">
+                <Button onClick={openModal} variant="contained" className="w-36">
                     Criar pedido
                 </Button>
             </div>
@@ -24,6 +31,8 @@ export default function OrdersButtons() {
             <div className='mb-3'>
                 <Divider />
             </div>
+
+            <OrdersRegisterModal isOpen={isModalOpen} onClose={closeModal} />
         </section>
     )
 }
