@@ -20,10 +20,11 @@ export default function BasicCard() {
                         <Typography variant="h5" component="div">
                             Nome do cliente
                         </Typography>
-                        <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>data do pedido</Typography>
-                        <Typography variant="body2">
-                            Valor total do pedido:
+                        <Typography variant="h6">
+                            Valor do pedido: 
                         </Typography>
+                        <Typography sx={{ color: 'text.secondary', mt: 1 }}>Data: </Typography>
+                        <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>Expira em: </Typography>
                     </CardContent>
                 </CardActionArea>
             </Card>
