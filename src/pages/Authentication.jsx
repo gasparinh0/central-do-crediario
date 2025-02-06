@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 //Imports de components
 import Register from '../components/AuthenticationPage/Register';
@@ -11,12 +11,23 @@ import { IoIosReturnLeft } from "react-icons/io";
 export default function Authentication() {
     const [isRegistering, setIsRegistering] = useState(false);
     const [isForgetPassword, setIsForgetPassword] = useState(false);
+    const [isDarkMode, setIsDarkMode] = useState(false);
+
+    useEffect(() => {
+        // Verifica o modo atual no localStorage
+        const mode = localStorage.getItem('toolpad-mode');
+        setIsDarkMode(mode === 'dark');
+    }, []);
+
+    const getBackgroundClass = () => {
+        return isDarkMode ? 'bg-[#121212]' : 'bg-white';
+    };
 
     return (
         <div className="bg-login-background bg-left-bottom bg-cover">
             {!isRegistering ? (
                 !isForgetPassword ? (
-                    <main className="bg-white shadow-2xl w-[600px] min-h-screen flex items-center justify-center rounded-r-2xl">
+                    <main className={`${getBackgroundClass()} shadow-2xl w-[600px] min-h-screen flex items-center justify-center rounded-r-2xl`}>
                         <Login
                             onRegister={() => setIsRegistering(true)}
                             onForgetPassword={() => setIsForgetPassword(true)}
@@ -27,7 +38,7 @@ export default function Authentication() {
                         />
                     </main>
                 ) : (
-                    <main className="bg-white shadow-2xl w-[600px] min-h-screen flex items-center justify-center rounded-r-2xl transition-all duration-300">
+                    <main className={`${getBackgroundClass()} shadow-2xl w-[600px] min-h-screen flex items-center justify-center rounded-r-2xl transition-all duration-300`}>
                         <div className="flex flex-col w-72">
                             <div
                                 onClick={() => setIsForgetPassword(false)}
@@ -44,7 +55,7 @@ export default function Authentication() {
                     </main>
                 )
             ) : (
-                <main className="bg-white shadow-2xl w-[600px] min-h-screen flex items-center justify-center rounded-r-2xl transition-all duration-300">
+                <main className={`${getBackgroundClass()} shadow-2xl w-[600px] min-h-screen flex items-center justify-center rounded-r-2xl transition-all duration-300`}>
                     <div className="flex flex-col w-72">
                         <div
                             onClick={() => setIsRegistering(false)}
