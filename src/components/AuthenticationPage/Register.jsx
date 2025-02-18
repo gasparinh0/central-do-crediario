@@ -8,7 +8,7 @@ import concluded from "../../ui/concluded.json"; // Caminho para o arquivo JSON 
 
 import { motion } from "framer-motion";
 
-export default function Register({ title, subtitle, buttonText, onBackToLogin }) {
+export default function Register({ title, subtitle, buttonText }) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
