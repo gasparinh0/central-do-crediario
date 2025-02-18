@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.bg-login-background-white {
+    background-image: url('src/assets/login-background-white.jpg');
+  }
+  
+  .bg-login-background-dark {
+    background-image: url('src/assets/login-background-dark.jpg');
+  }
