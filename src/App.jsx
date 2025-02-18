@@ -8,7 +8,7 @@ import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 const NAVIGATION = [
   {
     kind: 'header',
-    title: 'Main items',
+    title: 'Itens principais',
   },
   {
     segment: 'dashboard',
