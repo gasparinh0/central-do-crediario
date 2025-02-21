@@ -1,8 +1,10 @@
 import * as React from 'react';
+import { useState, useContext } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import { ClientContext } from '../../context/ClientContext'; // Importe o ClientContext
 
 const style = {
     position: 'absolute',
@@ -16,6 +18,30 @@ const style = {
 };
 
 export default function ClientRegisterModal({ isOpen, onClose }) {
+    const [name, setName] = useState('');
+    const [telephone, setPhone] = useState('');
+    const { addClient } = useContext(ClientContext); // Acesse a função addClient do contexto
+
+    const handleRegister = async () => {
+        // Obter o token do LocalStorage
+        const user = JSON.parse(localStorage.getItem('user'));
+        const userId = user ? user.userId : null;
+
+        // Criar o objeto do cliente
+        const newClient = {
+            name,
+            telephone,
+            userId, // Adicionar o userId ao cliente
+        };
+
+        try {
+            await addClient(newClient); // Chamar a função addClient do contexto
+            onClose(); // Fechar o modal após o cadastro
+        } catch (err) {
+            alert('Erro ao cadastrar cliente');
+        }
+    };
+
     if (!isOpen) return null; // Não renderiza o modal se não estiver aberto
 
     return (
@@ -33,13 +59,23 @@ export default function ClientRegisterModal({ isOpen, onClose }) {
                     </div>
                     <div className="flex flex-row items-baseline justify-center space-x-2 ml-4">
                         <p>Nome</p>
-                        <TextField label="Digite o nome" variant="standard" />
+                        <TextField 
+                            label="Digite o nome" 
+                            variant="standard" 
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
                     </div>
                     <div className="flex flex-row items-baseline justify-center space-x-2">
                         <p>Telefone</p>
-                        <TextField label="Digite o telefone" variant="standard" />
+                        <TextField 
+                            label="Digite o telefone" 
+                            variant="standard" 
+                            value={telephone}
+                            onChange={(e) => setPhone(e.target.value)}
+                        />
                     </div>
-                    <Button onClick={onClose} variant="contained" className="w-48">
+                    <Button onClick={handleRegister} variant="contained" className="w-48">
                         Cadastrar
                     </Button>
                 </div>
