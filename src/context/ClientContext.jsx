@@ -11,26 +11,25 @@ export const ClientProvider = ({ children }) => {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
-    // Função para buscar os clientes da API
     const fetchClients = async () => {
         try {
             const response = await fetch('http://localhost:8080/api/clients', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
+                    'Authorization': `Bearer ${user.token}` // Adicione o token de autenticação
                 },
-                body: JSON.stringify(newClient),
+                // Remova o body, pois uma requisição GET não deve ter corpo
             });
             if (!response.ok) {
                 throw new Error('Erro ao buscar clientes');
             }
             const data = await response.json();
-            setClients(data);
-            setLoading(false);
+            setClients(data); // Atualiza a lista de clientes com os dados da API
+            setLoading(false); // Define o carregamento como falso
         } catch (err) {
-            setError(err.message);
-            setLoading(false);
+            setError(err.message); // Define o erro
+            setLoading(false); // Define o carregamento como falso
         }
     };
 
@@ -41,7 +40,7 @@ export const ClientProvider = ({ children }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
+                    'Authorization': `Bearer ${user.token}` // Adicione o token de autenticação
                 },
                 body: JSON.stringify(newClient),
             });
@@ -49,9 +48,10 @@ export const ClientProvider = ({ children }) => {
                 throw new Error('Erro ao adicionar cliente');
             }
             const data = await response.json();
-            setClients([...clients, data]); // Adiciona o novo cliente à lista
+            setClients([...clients, data]); // Adiciona o novo cliente à lista local
+            await fetchClients(); // Atualiza a lista de clientes com os dados mais recentes da API
         } catch (err) {
-            setError(err.message);
+            setError(err.message); // Define o erro
         }
     };
 
