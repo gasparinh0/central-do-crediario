@@ -6,23 +6,31 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useContext } from 'react'; // Importe o useContext
+import { ClientContext } from '../../context/ClientContext'; // Importe o ClientContext
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData('Frozen yoghurt', 19999232399, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+import { formatToPhone } from 'brazilian-values';
 
 export default function ClientList() {
+  // Acesse os dados do contexto
+  const { clients, loading, error } = useContext(ClientContext);
+
+  // Se estiver carregando, exiba uma mensagem de carregamento
+  if (loading) {
+    return <div>Carregando clientes...</div>;
+  }
+
+  // Se houver um erro, exiba uma mensagem de erro
+  if (error) {
+    return <div>Erro ao carregar clientes: {error}</div>;
+  }
+
+  if (clients.length === 0) {
+    return <div className='flex justify-center items-center text-xl mt-9 text-gray-400'>Nenhum cliente encontrado.</div>;
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -35,17 +43,21 @@ export default function ClientList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {clients.map((client) => (
             <TableRow
-              key={row.name}
+              key={client._id} // Use o ID do cliente como chave
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {client.name}
               </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right"><EditIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} /></TableCell>
-              <TableCell align="right"><DeleteIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} /></TableCell>
+              <TableCell align="right">{formatToPhone(client.telephone)}</TableCell>
+              <TableCell align="right">
+                <EditIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+              </TableCell>
+              <TableCell align="right">
+                <DeleteIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
