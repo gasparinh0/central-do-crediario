@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,50 +6,71 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useContext } from 'react';
+import { ClientContext } from '../../context/ClientContext';
+import { formatToPhone } from 'brazilian-values';
 
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import ClientProfile from './ClientProfile';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
+export default function ClientList({ searchTerm }) {
+  const { clients, loading, error } = useContext(ClientContext);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null);
 
-const rows = [
-  createData('Frozen yoghurt', 19999232399, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+  const handleOpenDrawer = (client) => {
+    setSelectedClient(client);
+    setOpenDrawer(true);
+  };
 
-export default function ClientList() {
+  // Filtrando clientes pelo nome com base no termo da pesquisa
+  const filteredClients = (clients || [])
+  .filter(client => client?.name?.toLowerCase().includes(searchTerm?.toLowerCase() || ""));
+
+  if (loading) {
+    return <div>Carregando clientes...</div>;
+  }
+
+  if (error) {
+    return <div>Erro ao carregar clientes: {error}</div>;
+  }
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Nome</TableCell>
-            <TableCell align="right">Telefone</TableCell>
-            <TableCell align="right"></TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right"><EditIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} /></TableCell>
-              <TableCell align="right"><DeleteIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} /></TableCell>
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Nome</TableCell>
+              <TableCell>Telefone</TableCell>
+              <TableCell align='right'>Detalhes</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {filteredClients.length > 0 ? (
+              filteredClients.map((client) => (
+                <TableRow key={client._id}>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{formatToPhone(client.telephone)}</TableCell>
+                  <TableCell className='cursor-pointer' align='right' onClick={() => handleOpenDrawer(client)}><MoreVertIcon /></TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} align="center" style={{ color: 'gray' }}>
+                  Nenhum cliente encontrado
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <ClientProfile
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+        client={selectedClient}
+      />
+    </>
   );
 }
