@@ -5,12 +5,10 @@ import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 
-import ClientRegisterModal from './ClientRegisterModal'
-
+import ClientRegisterModal from './ClientRegisterModal';
 import SearchIcon from '@mui/icons-material/Search';
 
-
-export default function ClientButtons() {
+export default function ClientButtons({ setSearchTerm }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const openModal = () => setIsModalOpen(true);
@@ -21,7 +19,12 @@ export default function ClientButtons() {
             <div className="mb-3 flex justify-between items-center">
                 <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
                     <SearchIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-                    <TextField id="input-with-sx" label="Pesquisar" variant="standard" />
+                    <TextField
+                        id="input-with-sx"
+                        label="Pesquisar"
+                        variant="standard"
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </Box>
 
                 <Button onClick={openModal} variant="contained" className="w-48">
@@ -35,5 +38,5 @@ export default function ClientButtons() {
 
             <ClientRegisterModal isOpen={isModalOpen} onClose={closeModal} />
         </section>
-    )
+    );
 }
