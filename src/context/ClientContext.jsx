@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { notifySuccess } from '../ui/Toast'
 
 // Cria o contexto
 export const ClientContext = createContext();
@@ -19,7 +20,6 @@ export const ClientProvider = ({ children }) => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${user.token}` // Adicione o token de autenticação
                 },
-                // Remova o body, pois uma requisição GET não deve ter corpo
             });
             if (!response.ok) {
                 throw new Error('Erro ao buscar clientes');
@@ -49,6 +49,7 @@ export const ClientProvider = ({ children }) => {
             }
             const data = await response.json();
             setClients([...clients, data]); // Adiciona o novo cliente à lista local
+            notifySuccess("Cliente cadastrado com sucesso.", "bottom-right", 3000); // Exibe o Toast
             await fetchClients(); // Atualiza a lista de clientes com os dados mais recentes da API
         } catch (err) {
             setError(err.message); // Define o erro
@@ -71,6 +72,8 @@ export const ClientProvider = ({ children }) => {
             }
             const data = await response.json();
             setClients(clients.map(client => (client._id === id ? data : client))); // Atualiza o cliente na lista
+            await fetchClients(); // Atualiza a lista de clientes com os dados mais recentes da API
+            notifySuccess("Dados atualizados com sucesso.", "bottom-right", 3000); // Exibe o Toast
         } catch (err) {
             setError(err.message);
         }
@@ -90,6 +93,7 @@ export const ClientProvider = ({ children }) => {
                 throw new Error('Erro ao deletar cliente');
             }
             setClients(clients.filter(client => client._id !== id)); // Remove o cliente da lista
+            notifySuccess("Cliente deletado com sucesso.", "bottom-right", 3000); // Exibe o Toast
         } catch (err) {
             setError(err.message);
         }
