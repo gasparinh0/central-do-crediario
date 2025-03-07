@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -6,62 +6,71 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useContext } from 'react'; // Importe o useContext
-import { ClientContext } from '../../context/ClientContext'; // Importe o ClientContext
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { useContext } from 'react';
+import { ClientContext } from '../../context/ClientContext';
 import { formatToPhone } from 'brazilian-values';
 
-export default function ClientList() {
-  // Acesse os dados do contexto
-  const { clients, loading, error } = useContext(ClientContext);
+import ClientProfile from './ClientProfile';
 
-  // Se estiver carregando, exiba uma mensagem de carregamento
+export default function ClientList({ searchTerm }) {
+  const { clients, loading, error } = useContext(ClientContext);
+  const [openDrawer, setOpenDrawer] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null);
+
+  const handleOpenDrawer = (client) => {
+    setSelectedClient(client);
+    setOpenDrawer(true);
+  };
+
+  // Filtrando clientes pelo nome com base no termo da pesquisa
+  const filteredClients = (clients || [])
+  .filter(client => client?.name?.toLowerCase().includes(searchTerm?.toLowerCase() || ""));
+
   if (loading) {
     return <div>Carregando clientes...</div>;
   }
 
-  // Se houver um erro, exiba uma mensagem de erro
   if (error) {
     return <div>Erro ao carregar clientes: {error}</div>;
   }
 
-  if (clients.length === 0) {
-    return <div className='flex justify-center items-center text-xl mt-9 text-gray-400'>Nenhum cliente encontrado.</div>;
-  }
-
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Nome</TableCell>
-            <TableCell align="right">Telefone</TableCell>
-            <TableCell align="right"></TableCell>
-            <TableCell align="right"></TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {clients.map((client) => (
-            <TableRow
-              key={client._id} // Use o ID do cliente como chave
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {client.name}
-              </TableCell>
-              <TableCell align="right">{formatToPhone(client.telephone)}</TableCell>
-              <TableCell align="right">
-                <EditIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-              </TableCell>
-              <TableCell align="right">
-                <DeleteIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-              </TableCell>
+    <>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Nome</TableCell>
+              <TableCell>Telefone</TableCell>
+              <TableCell align='right'>Detalhes</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+          </TableHead>
+          <TableBody>
+            {filteredClients.length > 0 ? (
+              filteredClients.map((client) => (
+                <TableRow key={client._id}>
+                  <TableCell>{client.name}</TableCell>
+                  <TableCell>{formatToPhone(client.telephone)}</TableCell>
+                  <TableCell className='cursor-pointer' align='right' onClick={() => handleOpenDrawer(client)}><MoreVertIcon /></TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={3} align="center" style={{ color: 'gray' }}>
+                  Nenhum cliente encontrado
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <ClientProfile
+        open={openDrawer}
+        onClose={() => setOpenDrawer(false)}
+        client={selectedClient}
+      />
+    </>
   );
 }
